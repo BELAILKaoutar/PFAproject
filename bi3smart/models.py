@@ -15,21 +15,6 @@ class User(models.Model):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
     télé = models.CharField(max_length=10, blank=True, null=True)
-    '''def save(self, *args, **kwargs):
-        self.password = make_password(self.password)
-        super().save(*args, **kwargs)
-    def create_user(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('The Email field must be set')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    USERNAME_FIELD = 'email'
-    '''
-
 
 
 class Categorie(models.Model):
@@ -37,7 +22,7 @@ class Categorie(models.Model):
     nom_cate = models.CharField(max_length=150, blank=True, null=True)
 
 class Produit(models.Model):
-   idAdmin = models.AutoField(primary_key=True)
+   idProd = models.AutoField(primary_key=True)
    nom = models.CharField(max_length=150, blank=True, null=True)
    prix = models.FloatField(blank=True, null=True)
    qteTotal = models.IntegerField(blank=True, null=True)
@@ -49,6 +34,7 @@ class Client(models.Model):
     nom = models.CharField(max_length=150, blank=True, null=True)
     prenom = models.CharField(max_length=150, blank=True, null=True)
     adresse = models.CharField(max_length=150,blank=True,null=True)
+    télé = models.CharField(max_length=10, blank=True, null=True)
 
 class Recommandation(models.Model):
     idRec = models.AutoField(primary_key=True) 
