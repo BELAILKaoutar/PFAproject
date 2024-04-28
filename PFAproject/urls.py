@@ -15,11 +15,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
+from django.conf import settings
+from django.conf.urls.static import static
+from bi3smart.views import LoginViews,ProduitViews
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('index/',LoginViews.index_view, name='index_view'),
+    path('login/',LoginViews.login_view, name='login_view'),
+    path('signup/',LoginViews.signup, name='signup'),
+    path('shop/',ProduitViews),
     path('api/',include('bi3smart.urls')),
     path('api-auth', include('rest_framework.urls')),
     path('api/token', TokenObtainPairView.as_view()),
     path('api/token/refresh/', TokenRefreshView.as_view()),
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

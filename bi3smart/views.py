@@ -1,5 +1,9 @@
 
-from django.shortcuts import render
+from venv import logger
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect, render
+from grpc import Status
+from requests import request
 from bi3smart.models import User,Produit, Client,Commande,Recommandation,LigneCommande,Categorie
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
@@ -14,31 +18,34 @@ from django.contrib.auth.hashers import make_password, check_password
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.views import TokenObtainPairView
 #from django.shortcuts import render
-
+from rest_framework import status
+from rest_framework.renderers import JSONRenderer
 
 class LoginViews(APIView):
     permission_classes = [AllowAny] 
-    def post(self, request):
-            data = request.data.copy()
-            email = data.get('email')
-            password = data.get('password')
-            cin = data.get('cin')
-            nom = data.get('nom')
-            prenom = data.get('prenom')
-            age = data.get('age')
-            username = data.get('username')
-            adresse = data.get('adresse')
-            télé = data.get('télé')
+    def index_view(request):
+        return render(request, 'index.html')
+    def signup(request):
+        if request.method == 'POST':
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            cin = request.POST.get('cin')
+            nom = request.POST.get('nom')
+            prenom = request.POST.get('prenom')
+            age = request.POST.get('age')
+            username = request.POST.get('username')
+            adresse = request.POST.get('adresse')
+            télé = request.POST.get('télé')
 
             if not email:
-                return Response({'error': 'Email is required'}, status=400)
+                return HttpResponse({'error': 'Email is required'}, status=400)
             if not password:
-                return Response({'error': 'Password is required'}, status=400)
+                return HttpResponse({'error': 'Password is required'}, status=400)
             # Validate other required fields as needed
 
             try:
                 user = User.objects.get(email=email)
-                return Response({'error': 'User with this email already exists.'}, status=400)
+                return HttpResponse({'error': 'User with this email already exists.'}, status=400)
             except User.DoesNotExist:
                 hashed_password = make_password(password)
                 user = User.objects.create(
@@ -53,7 +60,31 @@ class LoginViews(APIView):
                     télé=télé
                 )
                 serializer = UserSerializer(user)
-                return Response({'message': 'User created successfully', 'user': serializer.data}, status=201)
+                return HttpResponse({'message': 'User created successfully', 'user': serializer.data}, status=201)
+                
+        else:
+             return render(request, 'signup.html')
+
+    def login_view(request):
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            try:
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                user = None
+
+            if user is not None:
+                if check_password(password, user.password):
+                    request.session['user_id'] = user.user_id
+                    return HttpResponseRedirect('/index/')  # Redirect to '/index/' upon successful login
+                else:
+                    return HttpResponse("Invalid login credentials. Please try again.")
+            else:
+                return HttpResponse("Invalid login credentials. Please try again.")
+
+        return render(request, 'login.html')
 
   
     def put(self, request):

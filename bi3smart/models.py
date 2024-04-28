@@ -26,6 +26,7 @@ class Produit(models.Model):
    nom = models.CharField(max_length=150, blank=True, null=True)
    prix = models.FloatField(blank=True, null=True)
    qteTotal = models.IntegerField(blank=True, null=True)
+   cover = models.ImageField(upload_to = 'images/')
    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
    categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE)
 
