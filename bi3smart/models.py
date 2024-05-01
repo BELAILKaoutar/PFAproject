@@ -26,16 +26,22 @@ class Produit(models.Model):
    nom = models.CharField(max_length=150, blank=True, null=True)
    prix = models.FloatField(blank=True, null=True)
    qteTotal = models.IntegerField(blank=True, null=True)
-   cover = models.ImageField(upload_to = 'images/')
+
    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
    categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE)
+   image = models.ImageField(upload_to="media/images/", null=True, blank=True)
 
+
+   #image = models.ImageField(upload_to='static/images/', null=True) 
+   #image_url = models.CharField(max_length=200, blank=True, null=True)
+   #image = models.CharField(max_length=200, blank=True, null=True)  
 class Client(models.Model):
     idCli = models.AutoField(primary_key=True)
     nom = models.CharField(max_length=150, blank=True, null=True)
     prenom = models.CharField(max_length=150, blank=True, null=True)
     adresse = models.CharField(max_length=150,blank=True,null=True)
     télé = models.CharField(max_length=10, blank=True, null=True)
+    message = models.CharField(max_length=10, blank=True, null=True)
 
 class Recommandation(models.Model):
     idRec = models.AutoField(primary_key=True) 

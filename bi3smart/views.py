@@ -1,7 +1,8 @@
 
 from venv import logger
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.conf import settings
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from grpc import Status
 from requests import request
 from bi3smart.models import User,Produit, Client,Commande,Recommandation,LigneCommande,Categorie
@@ -20,11 +21,29 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 #from django.shortcuts import render
 from rest_framework import status
 from rest_framework.renderers import JSONRenderer
+from .forms import ProduitForm
+
 
 class LoginViews(APIView):
     permission_classes = [AllowAny] 
     def index_view(request):
         return render(request, 'index.html')
+    def cart(request):
+        return render(request, 'cart.html')
+
+    def services(request):
+        return render(request, 'services.html')
+    def blog(request):
+        return render(request, 'blog.html')
+    def index1(request):
+        return render(request, 'chat.py')   
+    def shop(request):
+        produits = Produit.objects.all()  # Retrieve all Produit objects
+        return render(request, 'shop.html', {'produits': produits}) 
+    def aboutus(request):
+        return render(request, 'about.html')   
+    def indexAdmin_view(request):
+        return render(request, 'indexAdmin.html')
     def signup(request):
         if request.method == 'POST':
             email = request.POST.get('email')
@@ -78,7 +97,7 @@ class LoginViews(APIView):
             if user is not None:
                 if check_password(password, user.password):
                     request.session['user_id'] = user.user_id
-                    return HttpResponseRedirect('/index/')  # Redirect to '/index/' upon successful login
+                    return HttpResponseRedirect('/indexAdmin/')  # Redirect to '/index/' upon successful login
                 else:
                     return HttpResponse("Invalid login credentials. Please try again.")
             else:
@@ -124,23 +143,28 @@ class LoginViews(APIView):
 
 class ClientViews(APIView):
     permission_classes = [AllowAny] 
-    def post(self, request):
-            data = request.data.copy()
-            nom = data.get('nom')
-            prenom = data.get('prenom')
-            adresse = data.get('adresse')
-            télé = data.get('télé')
+    def contact(request):
+        return render(request, 'contact.html') 
+    def add_client(request):
+        if request.method == 'POST':
+            nom = request.POST.get('nom')
+            prenom = request.POST.get('prenom')
+            adresse = request.POST.get('adresse')
+            télé = request.POST.get('télé')
+            message = request.POST.get('message')
 
 
             client = Client.objects.create(
                 nom=nom,
                 prenom=prenom,
                 adresse=adresse,
-                télé=télé
+                télé=télé,
+                message=message
             )
             serializer = ClientSerializer(client)
             return Response({'message': 'Client created successfully', 'client': serializer.data}, status=201)               
-
+        else:
+            return render(request, '/contact/')
   
     def put(self, request):
         data = request.data.copy()
@@ -176,22 +200,21 @@ class ClientViews(APIView):
 
 class CategorieViews(APIView):
     permission_classes = [AllowAny] 
-    def post(self, request):
-            data = request.data.copy()
-            code_cate = data.get('code_cate')
-            nom_cate = data.get('nom_cate')
-
-
-
-            categorie = Categorie.objects.create(
-                code_cate=code_cate,
-                nom_cate=nom_cate,
-            )
+    def get(self, request):
+        categories = Categorie.objects.all()
+        serializer = CategorieSerializer(categories, many=True)
+        return render(request, 'category.html', {'categories': serializer.data})
+    def add_category(request):
+        if request.method == 'POST':
+            nom_cate = request.POST.get('nom_cate')
+            categorie = Categorie.objects.create(nom_cate=nom_cate)
             serializer = CategorieSerializer(categorie)
-            return Response({'message': 'Categorie created successfully', 'categorie': serializer.data}, status=201)               
+            return redirect('/category/')  # Redirect to the category list page after adding
+        else:
+            return render(request, 'add_category.html')            
 
   
-    def put(self, request):
+    def update(self, request):
         data = request.data.copy()
         code_cate = data.get('code_cate')
 
@@ -207,56 +230,113 @@ class CategorieViews(APIView):
         categorie_data = serializer.data
 
         return Response({'categorie': categorie_data}, status=200)
+    def update_category(request, code_cate):
+        category = get_object_or_404(Categorie, code_cate=code_cate)
 
-    def delete(self, request, code_cate=None):
-        code_cate = request.query_params.get('code_cate')
-        try:
-            categorie = Categorie.objects.get(code_cate=code_cate)
-        except Categorie.DoesNotExist:
-            return Response({'error': 'Categorie not found'}, status=404)
-        categorie.delete()
-        return Response("Categorie deleted successfully", status=200)
-    
+        if request.method == 'POST':
+            # Retrieve the updated category name from the form data
+            new_name = request.POST.get('nom_cate')
+            
+            # Update the category name
+            category.nom_cate = new_name
+            category.save()
+            
+            return redirect('/category/')
+        else:
+            return render(request, 'update_category.html', {'category': category})
+    def delete_category(request, code_cate):
+        category = get_object_or_404(Categorie, code_cate=code_cate)
+
+        if request.method == 'POST':
+            # If the user confirms deletion, delete the category
+            if 'confirm_delete' in request.POST:
+                category.delete()
+                return redirect('/category/')
+            # If the user cancels deletion, redirect back to the category list page
+            elif 'cancel_delete' in request.POST:
+                return redirect('/category/')
+        else:
+            # Render the confirmation template
+            return render(request, 'delete_category.html', {'category': category})
 #pour produit
 class ProduitViews(APIView):
-    def post(self, request):
-        required_keys = ['nom', 'prix', 'qteTotal', 'code_cate']
-        if not all(key in request.data for key in required_keys):
-            return Response({'error': 'All product fields are required'}, 400)
-
-        produit = Produit.objects.create(
-            nom=request.data.get('nom'),
-            prix=request.data.get('prix'),
-            qteTotal=request.data.get('qteTotal'),
-            user_id=request.data.get('user_id'),  # Assuming you have authenticated users
-            categorie_id=request.data.get('code_cate'),  # Assuming 'code_cate' refers to the categorie_id
-        )
-        produit.save()
-
-        return Response({'message': 'Product created successfully'})
-
-class ProduitViews(APIView):
     permission_classes = [AllowAny] 
-    def post(self, request):
-        data = request.data.copy()
-        idProd=request.data.get('idProd')
-        nom=request.data.get('nom')
-        prix=request.data.get('prix')
-        qteTotal=request.data.get('qteTotal')
-        user_id = data.get('user_id')
-        categorie_id= data.get('categorie_id')
+    def get(self,request):
+        produits = Produit.objects.all()
+        serializer = ProduitSerializer(produits, many=True)
+        return render(request, 'produit.html', {'produits': serializer.data})
+    def  add(request):
+        if request.method == 'POST':
+            idProd=request.POST.get('idProd')
+            nom=request.POST.get('nom')
+            prix=request.POST.get('prix')
+            qteTotal=request.POST.get('qteTotal')
+            user = request.POST.get('user_id')
+            categorie= request.POST.get('categorie_id')
 
+            produit = Produit.objects.create(
+                user=user,
+                categorie=categorie,
+            )
+            serializer = ProduitSerializer(produit)
+            return redirect('/produit/')  # Redirect to the category list page after adding
+        else:
+            # Fetch users and categories from the database
+            users = User.objects.all()
+            categories = Categorie.objects.all()
+            
+            print("Users:", users)  # Check if users are retrieved
+            print("Categories:", categories)  # Check if categories are retrieved
+            
+            return render(request, 'add_produit.html', {'users': users, 'categories': categories})
+        """if request.method == 'POST':
+            form = ProduitForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                return redirect('/produit/')
+        else:
+            form = ProduitForm()
+        return render(request, 'add_produit.html', {'form': form})"""
+    """def add_produit(request):
+                if request.method == "POST":
+            form=ProduitForm(data=request.POST,files=request.FILES)
+            if form.is_valid():
+                form.save()
+                obj=form.instance
+                return render(request,"index.html",{"obj":obj})
+        else:
+            form=ProduitForm()
+        image=Produit.objects.all()
+        return render(request,"add_produit.html",{"image":image,"form":form})"""
+    def add_produit(request):
+        if request.method == 'POST':
+            nom = request.POST.get('nom')
+            prix = request.POST.get('prix')
+            qteTotal = request.POST.get('qteTotal')
+            user_id = request.POST.get('user_id')
+            code_cate = request.POST.get('code_cate')
+            image = request.FILES.get('image')
 
+            # Get User and Categorie instances
+            user = User.objects.get(pk=user_id)
+            categorie = Categorie.objects.get(code_cate=code_cate)
 
-        produit = Produit.objects.create(
-            user_id=user_id,
-            categorie_id=categorie_id,
-        )
-        serializer = ProduitSerializer(produit)
-        return Response({'message': 'Produit created successfully', 'produit': produit.data}, status=201)        
+            # Create Produit instance and save to the database
+            produit = Produit.objects.create(
+                nom=nom,
+                prix=prix,
+                qteTotal=qteTotal,
+                user=user,
+                categorie=categorie,
+                image=image,
+            )
 
-
-    def put(self, request):
+            return redirect('/produit/')  # Redirect after successful form submission
+        else:
+            users = User.objects.all()
+            categories = Categorie.objects.all()
+            return render(request, 'add_produit.html', {'users': users, 'categories': categories})
+    def update(self, request):
         idProd=request.data.get('idProd')
         nom=request.data.get('nom')
         prix=request.data.get('prix')
@@ -274,15 +354,95 @@ class ProduitViews(APIView):
         return Response({
             'message': 'Produit created successfully',
         })
-    def delete(self, request, idProd=None):
+    """def delete_produit(self, request, idProd=None):
       idProd = request.query_params.get('idProd')
       try:
             produits = Produit.objects.get(idProd=idProd)
       except Produit.DoesNotExist:
                 return Response({'error': 'Produit not found'}, status=404)
       produits.delete()
-      return Response("Produit deleted succesfuly",status=200)
-    
+      return Response("Produit deleted succesfuly",status=200)"""
+    def update_produit(request, idProd):
+        produit = Produit.objects.get(pk=idProd)
+
+        if request.method == 'POST':
+            nom = request.POST.get('nom')
+            prix = request.POST.get('prix')
+            qteTotal = request.POST.get('qteTotal')
+            user_id = request.POST.get('user_id')
+            code_cate = request.POST.get('code_cate')
+            image = request.FILES.get('image')
+
+            print("Form data received:")
+            print("Nom:", nom)
+            print("Prix:", prix)
+            print("QteTotal:", qteTotal)
+            print("User ID:", user_id)
+            print("Category Code:", code_cate)
+            print("Image:", image)
+
+            if image:
+                print("Image file name:", image.name)
+
+            # Get User and Categorie instances
+            user = User.objects.get(pk=user_id)
+            categorie = Categorie.objects.get(code_cate=code_cate)
+
+            if image:
+                print("Updating image...")
+
+                # Save the image file to the media directory
+                produit.nom = nom
+                produit.prix = prix
+                produit.qteTotal = qteTotal
+                produit.user = user
+                produit.categorie = categorie
+                produit.image = image
+                produit.save()
+
+                print("Image updated successfully.")
+
+                return redirect('/produit/')  # Redirect after successful form submission
+            else:
+                print("No image provided. Existing image will be retained.")
+
+                # Update other fields without modifying the image
+                produit.nom = nom
+                produit.prix = prix
+                produit.qteTotal = qteTotal
+                produit.user = user
+                produit.categorie = categorie
+                produit.save()
+
+        else:
+            users = User.objects.all()
+            categories = Categorie.objects.all()
+            return render(request, 'update_produit.html', {'produit': produit, 'users': users, 'categories': categories})
+    def add_to_cart(request):
+        if request.method == 'POST':
+            # Get product information from the submitted form
+            image = request.POST.get('image')
+            name = request.POST.get('nom')
+            price = request.POST.get('prix')
+
+
+            return redirect('/cart/')
+        else:
+            return HttpResponseBadRequest("Invalid request method")     
+    def delete_produit(request, idProd):
+        produit = get_object_or_404(Produit, idProd=idProd)
+
+        if request.method == 'POST':
+            # If the user confirms deletion, delete the category
+            if 'confirm_delete' in request.POST:
+                produit.delete()
+                return redirect('/produit/')
+            # If the user cancels deletion, redirect back to the category list page
+            elif 'cancel_delete' in request.POST:
+                return redirect('/produit/')
+        else:
+            # Render the confirmation template
+            return render(request, 'delete_produit.html', {'produit': produit})
 class CommandeViews(APIView):
     permission_classes = [AllowAny] 
     def post(self, request):

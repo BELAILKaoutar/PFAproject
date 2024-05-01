@@ -11,9 +11,9 @@ urlpatterns = [
    path('signup',LoginViews.as_view()),
    path('login',LoginViews.as_view()),
    path('Clients',ClientViews.as_view()),
-   path('Categories',CategorieViews.as_view()),
-   path('shop',ProduitViews.as_view()),
+   path('category',CategorieViews.as_view()),
+   path('produits',ProduitViews.as_view()),
    path('Commandes',CommandeViews.as_view()),
    path('Lignes_commande',LigneCommandeViews.as_view()),
    path('Recommandations',RecommandationViews.as_view()),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

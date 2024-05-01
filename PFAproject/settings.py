@@ -141,5 +141,5 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #AUTH_USER_MODEL = 'bi3smart.User'
-MEDIA_ROOT = BASE_DIR/'media'
-MEDIA_URL = '/media/'
+MEDIA_URL="/media/"
+MEDIA_ROOT=os.path.join(BASE_DIR,"media/")
