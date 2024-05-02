@@ -17,7 +17,7 @@ from django.urls import path,include
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 from django.conf import settings
 from django.conf.urls.static import static
-from bi3smart.views import CategorieViews, LoginViews,ProduitViews,ClientViews,LigneCommandeViews,ChatbotViews
+from bi3smart.views import CategorieViews, LoginViews,ProduitViews,ClientViews,LigneCommandeViews
 
 
 urlpatterns = [
@@ -52,7 +52,7 @@ urlpatterns = [
         #cart
     path('cart/',ProduitViews.cart,name='cart'),
 
-    #path('chatbot/', views.ChatbotView.as_view(), name='chatbot'),# Chemin vers le chatbot
+    #path('chatbot/', ChatbotViews.as_view(), name='chatbot'),# Chemin vers le chatbot
     path('api/',include('bi3smart.urls')),
     path('api-auth', include('rest_framework.urls')),
     path('api/token', TokenObtainPairView.as_view()),

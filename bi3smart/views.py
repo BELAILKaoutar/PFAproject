@@ -29,6 +29,7 @@ from .forms import ProduitForm
 from django.http import JsonResponse
 from django.views import View
 import json
+#from chatbot import model   
 
 
 class LoginViews(APIView):
@@ -557,10 +558,7 @@ class RecommandationViews(APIView):
         recommandations.delete()
         return Response("Recommandation deleted succesfuly",status=200) 
     
-#return render(request, 'index.html')
-class ChatbotViews(View):
-    def chat(request):
-        return render(request, 'chatbot.py')
+"""class ChatbotView(View):
     def post(self, request):
         data = json.loads(request.body)
         question = data.get('question', '')
@@ -569,4 +567,4 @@ class ChatbotViews(View):
             response = model.generate_content(question)
             return JsonResponse({"response": response.text})
 
-        return JsonResponse({"response": "Aucune question fournie"}, status=400)
+        return JsonResponse({"response": "Aucune question fournie"}, status=400)"""
