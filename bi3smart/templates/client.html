@@ -38,11 +38,11 @@
   
                   <div class="collapse navbar-collapse" id="navbarsFurni">
                       <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-                          <li class="nav-item "><a class="nav-link" href="/indexAdmin/">Home</a></li>
-                          <li class="nav-item active"><a class="nav-link active" href="/produit/">Product</a></li>
+                          <li ><a class="nav-link" href="/indexAdmin/">Home</a></li>
+                          <li><a class="nav-link" href="/produit/">Product</a></li>
                           <li><a class="nav-link" href="/category/">Category</a></li>
             
-                          <li><a class="nav-link" href="/client/">Clients</a></li>
+                          <li class="nav-item active"><a class="nav-link " href="/client/">Clients</a></li>
                       </ul>
   
                       <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
@@ -55,37 +55,27 @@
               </div>
                   
           </nav>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Last Name</th>
+            <th>First Name</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Feedback</th>
 
-          <body>
-            <h1>Update Produit</h1>
-            <form method="post" action="{% url 'update_produit' produit.idProd %}" enctype="multipart/form-data">
-                {% csrf_token %}
-                <label for="nom">Name:</label><br>
-                <input type="text" id="nom" name="nom" value="{{ produit.nom }}"><br>
-        
-                <label for="prix">Price:</label><br>
-                <input type="number" id="prix" name="prix" value="{{ produit.prix }}"><br>
-        
-                <label for="qteTotal">Total Quantity:</label><br>
-                <input type="number" id="qteTotal" name="qteTotal" value="{{ produit.qteTotal }}"><br>
-        
-                <label for="image">Image:</label><br>
-                <input type="file" id="image" name="image"><br>
-        
-                <label for="user_id">User:</label><br>
-                <select id="user_id" name="user_id" aria-placeholder="Choose a user">
-                    {% for user in users %}
-                        <option value="{{ user.user_id }}" {% if user.user_id == produit.user.user_id %}selected{% endif %}>{{ user.username }}</option>
-                    {% endfor %}
-                </select><br>
-        
-                <label for="code_cate">Category:</label><br>
-                <select id="code_cate" name="code_cate" aria-placeholder="Choose a category">
-                    {% for categorie in categories %}
-                        <option value="{{ categorie.code_cate }}" {% if categorie.code_cate == produit.categorie.code_cate %}selected{% endif %}>{{ categorie.nom_cate }}</option>
-                    {% endfor %}
-                </select><br> 
-        <br>
-                <input type="submit" class="btn btn-primary mb-3" value="Update">
-            </form>
-        </body>
+        </tr>
+    </thead>
+    <tbody>
+        {% for client in clients %}
+        <tr>
+            <td>{{ client.nom }}</td>
+            <td>{{ client.prenom  }}</td>
+            <td>{{ client.adresse }}</td>
+            <td>{{ client.télé  }}</td>
+            <td>{{ client.message  }}</td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

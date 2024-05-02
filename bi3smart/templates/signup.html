@@ -36,25 +36,7 @@
                       <span class="navbar-toggler-icon"></span>
                   </button>
   
-                  <div class="collapse navbar-collapse" id="navbarsFurni">
-                      <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-                          <li class="nav-item"><a class="nav-link" href="/index/">Home</a></li>
-                          <li><a class="nav-link" href="/shop/">Shop</a></li>
-                          <li><a class="nav-link" href="about.html">About us</a></li>
-                          <li><a class="nav-link" href="services.html">Services</a></li>
-                          <li><a class="nav-link" href="blog.html">Blog</a></li>
-                          <li><a class="nav-link" href="contact.html">Contact us</a></li>
-                      </ul>
-  
-                      <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                          <li><a class="nav-link active" href="/login/">
-                            <img src="{% static 'images/user.svg' %}">
-                        </a></li>
-                          <li><a class="nav-link" href="cart.html">
-                            <img src="{% static 'images/cart.svg' %}">
-                        </a></li>
-                      </ul>
-                  </div>
+                  
               </div>
                   
           </nav>
@@ -75,43 +57,60 @@
                               <label>CIN</label>
                               <input type="text" name="cin" id="cin" placeholder="CIN" required>
                           </div>
+                          <br>
+
                           <div class="inputBox w50">
                               <label>Nom</label>
                               <input type="text" name="nom" id="nom" placeholder="Nom" required>
-                          </div> 
+                          </div>
+                          <br>
+ 
                           <div class="inputBox w50">
                               <label>Prénom</label>
                               <input type="text" name="prenom" id="prenom" placeholder="Prénom" required>
                           </div> 
+                          <br>
+
                           <div class="inputBox w50">
                               <label>Age</label>
                               <input type="text" name="age" id="age" placeholder="Age" required>
-                          </div> 
+                          </div>
+                          <br>
+ 
                           <div class="inputBox w50">
                               <label>Adresse</label>
                               <input type="text" name="adresse" id="adresse" placeholder="Adresse" required>
                           </div>
+                          <br>
+
                           <div class="inputBox w50">
                               <label>Tél</label>
                               <input type="text" name="télé" id="télé" placeholder="Tél" required>
                           </div>
+                          <br>
+
                           <div class="inputBox w50">
                               <label>Username</label>
                               <input type="text" name="username" id="username" placeholder="Username" required>
                           </div>  
+                          <br>
+
                           <div class="inputBox w50">
                               <label>Email</label>
                               <input type="email" name="email" id="email" placeholder="Email" required>
                           </div>
+                          <br>
                           <div class="inputBox w50">
                               <label>Password</label>            
                               <input type="password" name="password" id="password" placeholder="Password" required>
                           </div>
+                          <br>
                           <div class="inputBox w100">
-                              <button type="submit">Sign Up</button> 
+                              <button type="submit"  class="btn btn-primary mb-3">Sign Up</button>
+                              <button type="button"  class="btn btn-primary mb-3"><a href="/login/">Log In</a></button>
+ 
                           </div>
                       </form>
-                      <button type="button"><a href="/login/">Log In</a></button>
 
                   </div>
               </div>

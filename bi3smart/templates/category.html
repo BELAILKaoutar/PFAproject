@@ -5,8 +5,7 @@
 * Template URI: https://untree.co/
 * License: https://creativecommons.org/licenses/by/3.0/
 */ -->
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -39,27 +38,24 @@
   
                   <div class="collapse navbar-collapse" id="navbarsFurni">
                       <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-                          <li class="nav-item"><a class="nav-link" href="/indexAdmin/">Home</a></li>
-                          <li><a class="nav-link active" href="/produit/">Product</a></li>
-                          <li><a class="nav-link" href="/category/">Category</a></li>
-                          <li><a class="nav-link" href="services.html">Services</a></li>
-                          <li><a class="nav-link" href="blog.html">Blog</a></li>
-                          <li><a class="nav-link" href="contact.html">Contact us</a></li>
+                          <li ><a class="nav-link" href="/indexAdmin/">Home</a></li>
+                          <li><a class="nav-link" href="/produit/">Product</a></li>
+                          <li class="nav-item active"><a class="nav-link " href="/category/">Category</a></li>
+            
+                          <li><a class="nav-link" href="/client/">Clients</a></li>
                       </ul>
   
                       <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
                           <li><a class="nav-link" href="/login/">
                             <img src="{% static 'images/user.svg' %}">
                         </a></li>
-                          <li><a class="nav-link" href="cart.html">
-                            <img src="{% static 'images/cart.svg' %}">
-                        </a></li>
+                      
                       </ul>
                   </div>
               </div>
                   
           </nav>
-          <!-- End Header/Navigation -->        
+          <br>
     <!-- Button for adding a new category -->
     <a href="{% url 'add_category' %}" class="btn btn-primary mb-3">Add Category</a>
 

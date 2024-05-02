@@ -17,13 +17,14 @@ from django.urls import path,include
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 from django.conf import settings
 from django.conf.urls.static import static
-from bi3smart.views import CategorieViews, LoginViews,ProduitViews,ClientViews
+from bi3smart.views import CategorieViews, LoginViews,ProduitViews,ClientViews,LigneCommandeViews,ChatbotViews
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('index/',LoginViews.index_view, name='index_view'),
-    path('indexAdmin/',LoginViews.indexAdmin_view, name='indexAdmin_view'),   
+    path('indexAdmin/',LoginViews.indexAdmin_view, name='indexAdmin_view'),
+    path('logout/',LoginViews.logout,name='logout'),   
     path('login/',LoginViews.login_view, name='login_view'),
     path('signup/',LoginViews.signup, name='signup'),
         #category
@@ -36,18 +37,22 @@ urlpatterns = [
     path('produit/add/', ProduitViews.add_produit, name='add_produit'),
     path('produit/update/<str:idProd>/', ProduitViews.update_produit, name='update_produit'),
     path('produit/delete/<str:idProd>/', ProduitViews.delete_produit, name='delete_produit'),
-    path('chat/',LoginViews.index1, name='index1'),
+    path('produit/search/', ProduitViews.search_products, name='search_products'),
+    path('produit/list_produits/', ProduitViews.list_produits, name='list_produits'),
+        #shop
     path('shop/',LoginViews.shop, name='shop'),
+        #about us
     path('aboutus/',LoginViews.aboutus, name='aboutus'), 
-    path('cart/',LoginViews.cart, name='cart'), 
-    path('services/',LoginViews.services, name='services'), 
-    path('blog/',LoginViews.blog, name='blog'), 
-
+ 
+        #client
+    path('client/',ClientViews.client, name='client'),
+        #contact
     path('contact/',ClientViews.contact, name='contact'),
     path('contact/add/',ClientViews.add_client, name='add_client'),
-    path('shop/add_to_cart/', ProduitViews.add_to_cart, name='add_to_cart'),
+        #cart
+    path('cart/',ProduitViews.cart,name='cart'),
 
-    #path('shop/',ProduitViews),
+    #path('chatbot/', views.ChatbotView.as_view(), name='chatbot'),# Chemin vers le chatbot
     path('api/',include('bi3smart.urls')),
     path('api-auth', include('rest_framework.urls')),
     path('api/token', TokenObtainPairView.as_view()),

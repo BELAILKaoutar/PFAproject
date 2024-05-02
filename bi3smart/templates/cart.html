@@ -41,8 +41,6 @@
                           <li class="nav-item"><a class="nav-link" href="/index/">Home</a></li>
                           <li><a class="nav-link active" href="/shop/">Shop</a></li>
                           <li><a class="nav-link" href="/aboutus/">About us</a></li>
-                          <li><a class="nav-link" href="/services/">Services</a></li>
-                          <li><a class="nav-link" href="/blog/">Blog</a></li>
                           <li><a class="nav-link" href="/contact/">Contact us</a></li>
                       </ul>
   
@@ -86,67 +84,40 @@
                   <div class="site-blocks-table">
                     <table class="table">
                       <thead>
-                        <tr>
-                          <th class="product-thumbnail">Image</th>
-                          <th class="product-name">Product</th>
-                          <th class="product-price">Price</th>
-                          <th class="product-quantity">Quantity</th>
-                          <th class="product-total">Total</th>
-                          <th class="product-remove">Remove</th>
-                        </tr>
+                          <tr>
+                              <th class="product-thumbnail">Image</th>
+                              <th class="product-name">Product</th>
+                              <th class="product-price">Price</th>
+                              <th class="product-quantity">Quantity</th>
+                              <th class="product-total">Total</th>
+                              <th class="product-remove">Add</th>
+                          </tr>
                       </thead>
-                      <tbody>
-                        <tr>
-                          <td class="product-thumbnail">
-                            <img src="images/product-1.png" alt="Image" class="img-fluid">
-                          </td>
-                          <td class="product-name">
-                            <h2 class="h5 text-black">Product 1</h2>
-                          </td>
-                          <td>$49.00</td>
-                          <td>
-                            <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
-                              <div class="input-group-prepend">
-                                <button class="btn btn-outline-black decrease" type="button">&minus;</button>
-                              </div>
-                              <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                              <div class="input-group-append">
-                                <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                              </div>
-                            </div>
-        
-                          </td>
-                          <td>$49.00</td>
-                          <td><a href="#" class="btn btn-black btn-sm">X</a></td>
-                        </tr>
-						{% for item in cart_items %}
-						<p>{{ item.image }} {{ item.nom }} - ${{ item.prix }}</p>
-					    {% endfor %}
-                        <tr>
-                          <td class="product-thumbnail">
-                            <img src="images/product-2.png" alt="Image" class="img-fluid">
-                          </td>
-                          <td class="product-name">
-                            <h2 class="h5 text-black">Product 2</h2>
-                          </td>
-                          <td>$49.00</td>
-                          <td>
-                            <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
-                              <div class="input-group-prepend">
-                                <button class="btn btn-outline-black decrease" type="button">&minus;</button>
-                              </div>
-                              <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                              <div class="input-group-append">
-                                <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                              </div>
-                            </div>
-        
-                          </td>
-                          <td>$49.00</td>
-                          <td><a href="#" class="btn btn-black btn-sm">X</a></td>
-                        </tr>
+ 
+                    <tbody>
+                          {% for produit in produits %}
+                          <tr>
+                              <td class="product-thumbnail">
+                                  <img id="image" src="{{ produit.image.url }}" alt="Image" class="img-fluid">
+                              </td>
+                              <td class="product-name">
+                                  <h2 class="h5 text-black" id="nom">{{ produit.nom }}</h2>
+                              </td>
+                              <td id="prix">${{ produit.prix }}</td>
+                              <td>
+                                  <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
+                                      <input type="text" id="qte_commandee" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                                  </div>
+                              </td>
+                              <td id="total">${{ produit.prix }}</td>
+                              <td>
+                                <button type="submit"  class="btn btn-primary mb-3">Add to cart</button>
+
+                            </td>
+                          </tr>
+                          {% endfor %}
                       </tbody>
-                    </table>
+                  </table>
                   </div>
                 </form>
               </div>

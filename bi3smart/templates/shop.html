@@ -39,10 +39,9 @@
                   <div class="collapse navbar-collapse" id="navbarsFurni">
                       <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
                           <li class="nav-item"><a class="nav-link" href="/index/">Home</a></li>
-                          <li><a class="nav-link active" href="/shop/">Shop</a></li>
+                          <li class="nav-item active"><a class="nav-link active" href="/shop/">Shop</a></li>
                           <li><a class="nav-link" href="/aboutus/">About us</a></li>
-                          <li><a class="nav-link" href="/services/">Services</a></li>
-                          <li><a class="nav-link" href="/blog/">Blog</a></li>
+
                           <li><a class="nav-link" href="/contact/">Contact us</a></li>
                       </ul>
   
@@ -86,38 +85,28 @@
 					<!-- End Column 1 -->
 					{% for produit in produits %}
 					<div class="col-12 col-md-4 col-lg-3 mb-5">
-						<a class="product-item" href="#">
-							<img src="{{ produit.image.url }}" class="img-fluid product-thumbnail" style="width: 200px; height: 200px;">
-							<h3 class="product-title">{{ produit.nom }}</h3>
-							<strong class="product-price">${{ produit.prix }}</strong>
-							<!-- Add more fields here if needed -->
-					
-							<span class="icon-cross" >
-								<img src="{% static 'images/cross.svg' %}" class="img-fluid">
-								<form action="/add_to_cart/" method="post">
-									{% csrf_token %}
-
-									<input type="hidden" name="image" value="{{ product.image }}">
-									<input type="hidden" name="name" value="{{ product.nom }}">
-									<input type="hidden" name="price" value="{{ product.prix }}">
-									<button type="submit">Add to Cart</button>
-								</form>
-							</span>
-						</a>
+						<form method="post" action="{% url 'addpanier' %}">
+							{% csrf_token %}
+							<input type="hidden" name="nom" value="{{ produit.nom }}">
+							<input type="hidden" name="prix" value="{{ produit.prix }}">
+							<!-- Add more hidden fields as needed -->
+							<a class="product-item" href="#">
+								<img src="{{ produit.image.url }}" class="img-fluid product-thumbnail" style="width: 200px; height: 200px;">
+								<h3 class="product-title">{{ produit.nom }}</h3>
+								<strong class="product-price">${{ produit.prix }}</strong>
+								<!-- Add more fields here if needed -->
+								<span class="icon-cross">
+									<img src="{% static 'images/cross.svg' %}" class="img-fluid">
+								</span>
+							</a>
+							<button type="submit" class="btn btn-info btn-sm">Add</button>
+						</form>
 					</div>
 					{% endfor %}
-
-
-			
-
-				
-
-
 
 		      	</div>
 		    </div>
 		</div>
-
 
 		<!-- Start Footer Section -->
 		<footer class="footer-section">
@@ -152,8 +141,8 @@
 
 				<div class="row g-5 mb-5">
 					<div class="col-lg-4">
-						<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Furni<span>.</span></a></div>
-						<p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant</p>
+						<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">BostaBela<span>.</span></a></div>
+						<p class="mb-4">Welcome</p>
 
 						<ul class="list-unstyled custom-social">
 							<li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>

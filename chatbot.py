@@ -1,6 +1,5 @@
 import google.generativeai as genai
 
-
 genai.configure(api_key="AIzaSyDSADyyiHhPDT_ekHY_hHq1OYrVtD91H3Q")
 
 # Set up the model
@@ -35,8 +34,9 @@ model = genai.GenerativeModel(model_name="gemini-1.5-pro-latest", generation_con
 
  
 print('\nReady to chat...')
+
 while True:
   prompt= input("You: ")
   response = model.generate_content(prompt)
   result = ''.join([p.text for p in response.candidates[0].content.parts])
-  print("Gemini: ", result)
+  print("Chatbot: ", result)

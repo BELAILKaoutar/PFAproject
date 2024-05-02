@@ -38,30 +38,35 @@
   
                   <div class="collapse navbar-collapse" id="navbarsFurni">
                       <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-                          <li class="nav-item"><a class="nav-link" href="/indexAdmin/">Home</a></li>
-                          <li><a class="nav-link active" href="/produit/">Product</a></li>
+                          <li ><a class="nav-link" href="/indexAdmin/">Home</a></li>
+                          <li class="nav-item active"><a class="nav-link " href="/produit/">Product</a></li>
                           <li><a class="nav-link" href="/category/">Category</a></li>
-                          <li><a class="nav-link" href="services.html">Services</a></li>
-                          <li><a class="nav-link" href="blog.html">Blog</a></li>
-                          <li><a class="nav-link" href="contact.html">Contact us</a></li>
+            
+                          <li><a class="nav-link" href="/client/">Clients</a></li>
                       </ul>
   
                       <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
                           <li><a class="nav-link" href="/login/">
                             <img src="{% static 'images/user.svg' %}">
                         </a></li>
-                          <li><a class="nav-link" href="cart.html">
-                            <img src="{% static 'images/cart.svg' %}">
-                        </a></li>
+                      
                       </ul>
                   </div>
               </div>
                   
           </nav>
           <!-- End Header/Navigation -->
+          <br>
             <!-- Button for adding a new produit -->
             <a href="{% url 'add_produit' %}" class="btn btn-primary mb-3">Add Produit</a>
-        
+            <form role="search" action="{% url 'search_products' %}" class="d-flex">
+                <div class="input-group">
+                    <input type="search_products" name="query" class="form-control" placeholder="Search Product">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
             <!-- Produit table -->
             <table class="table">
                 <thead>
@@ -72,16 +77,15 @@
                         <th>Name</th>
                         <th>Price</th>
                         <th>Quantity</th>
-                        <!-- Add other table headers as needed -->
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for produit in produits %}
                     <tr>
-                        <td><img src="{{ produit.image }}" alt="Product Image" width="100"></td>
-                        <td>{{ produit.categorie }}</td>
-                        <td>{{ produit.user }}</td>
+                        <td><img src="{{ produit.image.url }}" alt="Product Image" width="100"></td>
+                        <td>{{ produit.categorie.nom_cate }}</td>
+                        <td>{{ produit.user.username }}</td>
                         <td>{{ produit.nom }}</td>
                         <td>{{ produit.prix }}</td>
                         <td>{{ produit.qteTotal }}</td>
@@ -93,7 +97,16 @@
                     {% endfor %}
                 </tbody>
             </table>
-        
+            <div class="pagination">
+                {% for i in produits.paginator.page_range %}
+                    {% if produits.number == i %}
+                        <span class="btn btn-primary active">{{ i }}</span>
+                    {% else %}
+                        <a href="?page={{ i }}" class="btn btn-outline-primary">{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
             <!-- Any additional content or scripts -->
         </body>
         </html>

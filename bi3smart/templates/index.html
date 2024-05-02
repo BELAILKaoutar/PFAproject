@@ -41,16 +41,15 @@
                           <li class="nav-item active"><a class="nav-link" href="/index/">Home</a></li>
                           <li><a class="nav-link" href="/shop/">Shop</a></li>
                           <li><a class="nav-link" href="about.html">About us</a></li>
-                          <li><a class="nav-link" href="services.html">Services</a></li>
-                          <li><a class="nav-link" href="blog.html">Blog</a></li>
                           <li><a class="nav-link" href="contact.html">Contact us</a></li>
                       </ul>
   
                       <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                          <li><a class="nav-link" href="/login/">
+                          <li><a class="nav-link" href="{% url 'logout' %}">
                             <img src="{% static 'images/user.svg' %}">
                         </a></li>
-                          <li><a class="nav-link" href="cart.html">
+				
+                          <li><a class="nav-link" href="/cart/">
                             <img src="{% static 'images/cart.svg' %}">
                         </a></li>
                       </ul>
@@ -70,13 +69,13 @@
 					<div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
 						<h2 class="mb-4 section-title">Crafted with excellent material.</h2>
 						<p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. </p>
-						<p><a href="shop.html" class="btn">Explore</a></p>
+						<p><a href="/shop/" class="btn">Explore</a></p>
 					</div> 
 					<!-- End Column 1 -->
 
 					<!-- Start Column 2 -->
 					<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-						<a class="product-item" href="cart.html">
+						<a class="product-item" href="/cart/">
 							<img src="{% static 'images/product-1.png' %}" class="img-fluid product-thumbnail">
 							<h3 class="product-title">Nordic Chair</h3>
 							<strong class="product-price">$50.00</strong>

@@ -30,6 +30,8 @@ class CommandeSerializer(serializers.ModelSerializer):
     
 
 class ProduitSerializer(serializers.ModelSerializer):
+    categorie = serializers.CharField(source='categorie.nom_cate', read_only=True)
+    user = serializers.CharField(source='user.username', read_only=True)
     class Meta:
         model = Produit
         fields = '__all__'

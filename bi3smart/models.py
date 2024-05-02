@@ -56,13 +56,14 @@ class Commande (models.Model):
         ('R','Refusé'),
         ('EC ','En cours'),
     ]
-    etatCommande = models.CharField(max_length=10, choices=ETAT_CHOICES)
+    etatCommande = models.CharField(max_length=10, choices=ETAT_CHOICES, default='EC')
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 
 
-
 class LigneCommande(models.Model):
-    produit = models.ForeignKey(Produit, on_delete=models.CASCADE,null=True)
-    commande = models.ForeignKey(Commande, on_delete=models.CASCADE,null=True)
-    qte_commandee = models.IntegerField(blank=True, null=True)
+    #produit = models.ForeignKey(Produit, on_delete=models.CASCADE,null=True)
+    nom = models.CharField(max_length=150, blank=True, null=True)
+    prix = models.FloatField(blank=True, null=True)
+    qte_commandee = models.IntegerField(blank=True, null=True , default=1)
+    total = models.FloatField(blank=True, null=True)
 

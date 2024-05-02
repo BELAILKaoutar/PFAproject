@@ -1,8 +1,11 @@
 
+import json
+from pyexpat import model
 from venv import logger
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views import View
 from grpc import Status
 from requests import request
 from bi3smart.models import User,Produit, Client,Commande,Recommandation,LigneCommande,Categorie
@@ -18,19 +21,22 @@ from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.hashers import make_password, check_password
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.views import TokenObtainPairView
-#from django.shortcuts import render
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from rest_framework import status
 from rest_framework.renderers import JSONRenderer
 from .forms import ProduitForm
+#views pour le chatbot gemini pro
+from django.http import JsonResponse
+from django.views import View
+import json
 
 
 class LoginViews(APIView):
     permission_classes = [AllowAny] 
+    def logout(request):
+        return render(request, 'login.html')
     def index_view(request):
         return render(request, 'index.html')
-    def cart(request):
-        return render(request, 'cart.html')
-
     def services(request):
         return render(request, 'services.html')
     def blog(request):
@@ -143,6 +149,9 @@ class LoginViews(APIView):
 
 class ClientViews(APIView):
     permission_classes = [AllowAny] 
+    def client(request):
+        clients = Client.objects.all()  # Retrieve all Produit objects
+        return render(request, 'client.html', {'clients': clients}) 
     def contact(request):
         return render(request, 'contact.html') 
     def add_client(request):
@@ -261,10 +270,9 @@ class CategorieViews(APIView):
 #pour produit
 class ProduitViews(APIView):
     permission_classes = [AllowAny] 
-    def get(self,request):
-        produits = Produit.objects.all()
-        serializer = ProduitSerializer(produits, many=True)
-        return render(request, 'produit.html', {'produits': serializer.data})
+    def cart(request):
+        produits = Produit.objects.all() 
+        return render(request, 'cart.html', {'produits': produits})
     def  add(request):
         if request.method == 'POST':
             idProd=request.POST.get('idProd')
@@ -289,25 +297,8 @@ class ProduitViews(APIView):
             print("Categories:", categories)  # Check if categories are retrieved
             
             return render(request, 'add_produit.html', {'users': users, 'categories': categories})
-        """if request.method == 'POST':
-            form = ProduitForm(request.POST, request.FILES)
-            if form.is_valid():
-                form.save()
-                return redirect('/produit/')
-        else:
-            form = ProduitForm()
-        return render(request, 'add_produit.html', {'form': form})"""
-    """def add_produit(request):
-                if request.method == "POST":
-            form=ProduitForm(data=request.POST,files=request.FILES)
-            if form.is_valid():
-                form.save()
-                obj=form.instance
-                return render(request,"index.html",{"obj":obj})
-        else:
-            form=ProduitForm()
-        image=Produit.objects.all()
-        return render(request,"add_produit.html",{"image":image,"form":form})"""
+
+ 
     def add_produit(request):
         if request.method == 'POST':
             nom = request.POST.get('nom')
@@ -418,17 +409,7 @@ class ProduitViews(APIView):
             users = User.objects.all()
             categories = Categorie.objects.all()
             return render(request, 'update_produit.html', {'produit': produit, 'users': users, 'categories': categories})
-    def add_to_cart(request):
-        if request.method == 'POST':
-            # Get product information from the submitted form
-            image = request.POST.get('image')
-            name = request.POST.get('nom')
-            price = request.POST.get('prix')
 
-
-            return redirect('/cart/')
-        else:
-            return HttpResponseBadRequest("Invalid request method")     
     def delete_produit(request, idProd):
         produit = get_object_or_404(Produit, idProd=idProd)
 
@@ -443,6 +424,45 @@ class ProduitViews(APIView):
         else:
             # Render the confirmation template
             return render(request, 'delete_produit.html', {'produit': produit})
+    def search_products(request):
+        query = request.GET.get('query')
+        produits = Produit.objects.filter(nom__contains=query)
+        serializer = ProduitSerializer(produits, many=True)
+        return render(request, 'produit.html', {'produits': produits})
+    def get(self, request):
+        produits = Produit.objects.all()
+        
+        # Pagination
+        paginator = Paginator(produits, 2)  # Show 2 produits per page
+        page = request.GET.get('page', 1)
+        try:
+            produits_page = paginator.page(page)
+        except PageNotAnInteger:
+            produits_page = paginator.page(1)
+        except EmptyPage:
+            produits_page = paginator.page(paginator.num_pages)
+        
+        serializer = ProduitSerializer(produits_page, many=True)
+        
+        return render(request, 'produit.html', {'produits': produits_page, 'serializer_data': serializer.data})
+
+    def list_produits(request):
+        produits = Produit.objects.all()
+        
+        # Pagination
+        paginator = Paginator(produits, 2)  # Show 2 produits per page
+        page = request.GET.get('page', 1)
+        try:
+            produits_page = paginator.page(page)
+        except PageNotAnInteger:
+            produits_page = paginator.page(1)
+        except EmptyPage:
+            produits_page = paginator.page(paginator.num_pages)
+        
+        serializer = ProduitSerializer(produits_page, many=True)
+        
+        return render(request, 'produit.html', {'produits': produits_page, 'serializer_data': serializer.data})
+
 class CommandeViews(APIView):
     permission_classes = [AllowAny] 
     def post(self, request):
@@ -466,6 +486,42 @@ class CommandeViews(APIView):
         return Response("Commande deleted succesfuly",status=200) 
 class LigneCommandeViews(APIView):
     permission_classes = [AllowAny] 
+    def cart(request):
+        produits = Produit.objects.all() 
+        return render(request, 'cart.html', {'produits': produits})
+    def addpanier(request):
+        if request.method == 'POST':
+            nom = request.POST.get('nom')
+            prix = request.POST.get('prix')
+            qte_commandee = request.POST.get('qte_commandee')
+
+            # Check if both nom, prix, and qte_commandee are not None
+            if nom is not None and prix is not None and qte_commandee is not None:
+                # Convert the prix to float and qte_commandee to int
+                prix = float(prix)
+                qte_commandee = int(qte_commandee)
+
+                # Calculate the total
+                total = prix * qte_commandee
+
+                # Create a new LigneCommande instance
+                LigneCommande.objects.create(
+                    nom=nom,
+                    prix=prix,
+                    qte_commandee=qte_commandee,
+                    total=total
+                )
+
+                # Return a success response
+                return JsonResponse({'message': 'Product added to cart successfully'})
+            else:
+                # Handle the case where nom, prix, or qte_commandee are None
+                return JsonResponse({'error': 'Invalid product information'})
+        else:
+            # If the request method is not POST, return an error response
+            return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
     def post(self, request):
         data = request.data.copy()
         qte_commandee=request.data.get('qte_commandee')
@@ -500,3 +556,17 @@ class RecommandationViews(APIView):
                 return Response({'error': 'Recommandation not found'}, status=404)
         recommandations.delete()
         return Response("Recommandation deleted succesfuly",status=200) 
+    
+#return render(request, 'index.html')
+class ChatbotViews(View):
+    def chat(request):
+        return render(request, 'chatbot.py')
+    def post(self, request):
+        data = json.loads(request.body)
+        question = data.get('question', '')
+
+        if question:
+            response = model.generate_content(question)
+            return JsonResponse({"response": response.text})
+
+        return JsonResponse({"response": "Aucune question fournie"}, status=400)

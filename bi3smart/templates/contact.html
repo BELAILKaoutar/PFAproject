@@ -41,9 +41,8 @@
                           <li class="nav-item"><a class="nav-link" href="/index/">Home</a></li>
                           <li><a class="nav-link active" href="/shop/">Shop</a></li>
                           <li><a class="nav-link" href="/aboutus/">About us</a></li>
-                          <li><a class="nav-link" href="/services/">Services</a></li>
-                          <li><a class="nav-link" href="/blog/">Blog</a></li>
-                          <li><a class="nav-link" href="/contact/">Contact us</a></li>
+
+                          <li class="nav-item active"><a class="nav-link" href="/contact/">Contact us</a></li>
                       </ul>
   
                       <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
@@ -67,15 +66,12 @@
 						<div class="col-lg-5">
 							<div class="intro-excerpt">
 								<h1>Contact</h1>
-								<p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
+								<p class="mb-4">Feel free to express your opinion.</p>
 								<p><a href="" class="btn btn-secondary me-2">Shop Now</a><a href="#" class="btn btn-white-outline">Explore</a></p>
 							</div>
 						</div>
-						<div class="col-lg-7">
-							<div class="hero-img-wrap">
-								<img src="images/couch.png" class="img-fluid">
-							</div>
-						</div>
+						{% load static %}
+
 					</div>
 				</div>
 			</div>
@@ -102,7 +98,7 @@
                       </svg>
                     </div> <!-- /.icon -->
                     <div class="service-contents">
-                      <p>43 Raymouth Rd. Baltemoer, London 3910</p>
+                      <p>43 Riad. rabat, Morocco 3910</p>
                     </div> <!-- /.service-contents-->
                   </div> <!-- /.service -->
                 </div>
@@ -115,7 +111,7 @@
                       </svg>
                     </div> <!-- /.icon -->
                     <div class="service-contents">
-                      <p>info@yourdomain.com</p>
+                      <p>BostaBela@gmail.com</p>
                     </div> <!-- /.service-contents-->
                   </div> <!-- /.service -->
                 </div>
@@ -128,7 +124,7 @@
                       </svg>
                     </div> <!-- /.icon -->
                     <div class="service-contents">
-                      <p>+1 294 3925 3939</p>
+                      <p>+212 94 39 25 39 39</p>
                     </div> <!-- /.service-contents-->
                   </div> <!-- /.service -->
                 </div>
@@ -160,7 +156,7 @@
 						<input type="text" class="form-control" id="télé" name="télé">
 					</div>
 					<div class="form-group mb-5">
-						<label class="text-black" for="message">Message</label>
+						<label class="text-black" for="message">Feedback</label>
 						<textarea name="message" class="form-control" id="message" cols="30" rows="5"></textarea>
 					</div>
 				
@@ -182,41 +178,10 @@
 
 		
 
-		<!-- Start Footer Section -->
-		<footer class="footer-section">
-			<div class="container relative">
-
-				<div class="sofa-img">
-					<img src="images/sofa.png" alt="Image" class="img-fluid">
-				</div>
-
-				<div class="row">
-					<div class="col-lg-8">
-						<div class="subscription-form">
-							<h3 class="d-flex align-items-center"><span class="me-1"><img src="images/envelope-outline.svg" alt="Image" class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
-
-							<form action="#" class="row g-3">
-								<div class="col-auto">
-									<input type="text" class="form-control" placeholder="Enter your name">
-								</div>
-								<div class="col-auto">
-									<input type="email" class="form-control" placeholder="Enter your email">
-								</div>
-								<div class="col-auto">
-									<button class="btn btn-primary">
-										<span class="fa fa-paper-plane"></span>
-									</button>
-								</div>
-							</form>
-
-						</div>
-					</div>
-				</div>
-
+		
 				<div class="row g-5 mb-5">
 					<div class="col-lg-4">
-						<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Furni<span>.</span></a></div>
-						<p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant</p>
+						<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">BostaBela<span>.</span></a></div>
 
 						<ul class="list-unstyled custom-social">
 							<li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
@@ -230,10 +195,9 @@
 						<div class="row links-wrap">
 							<div class="col-6 col-sm-6 col-md-3">
 								<ul class="list-unstyled">
-									<li><a href="#">About us</a></li>
-									<li><a href="#">Services</a></li>
-									<li><a href="#">Blog</a></li>
-									<li><a href="#">Contact us</a></li>
+									<li><a href="/aboutus/">About us</a></li>
+				
+									<li><a href="/contact/">Contact us</a></li>
 								</ul>
 							</div>
 
